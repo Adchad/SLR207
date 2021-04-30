@@ -11,7 +11,7 @@ import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
 public class App {
-    static int secondsTimeout = 10;
+    static int secondsTimeout = 40;
     static String file_name;
     static ArrayList<String> machineList;
     static int nbMachines;
@@ -93,10 +93,16 @@ public class App {
         BufferedReader br = new BufferedReader(fr) ;
         Scanner        sc = new Scanner(br) ;
 
+        ArrayList<Integer> hash_list = new ArrayList<Integer>();
+        ArrayList<String> fileName_list = new ArrayList<String>();
+
+
         while(sc.hasNextLine()){
+            
             String line = sc.nextLine();
             String word = line.split(" ")[0];
-            int hash = word.hashCode();
+            System.out.println(word);
+            int hash = word.hashCode() & 0xfffffff;
             File output = new File( "/tmp/Adam/shuffles/" + hash + "-" + java.net.InetAddress.getLocalHost().getHostName() +".txt");
             output.createNewFile();
             
@@ -105,10 +111,9 @@ public class App {
             fw.flush();
             fw.close();
 
-            int numeroMachine = hash % nbMachines;
+            fileName_list.add(output.getAbsolutePath());
+            hash_list.add(hash);
 
-            createDir(machineList.get(numeroMachine));
-            sendFile(machineList.get(numeroMachine), output.getAbsolutePath());
 
         }
 
@@ -116,6 +121,14 @@ public class App {
         fr.close();
 
         System.out.println("Shuffle finished");
+
+        for(int i =0 
+        ; i<fileName_list.size() ; ++i){
+            int numeroMachine = hash_list.get(i) % nbMachines;
+            createDir(machineList.get(numeroMachine));
+            sendFile( machineList.get(numeroMachine), fileName_list.get(i) );
+        }
+        
 
 
         return 0;
@@ -165,7 +178,9 @@ public class App {
             String line = sc.nextLine();
             machineList.add(line);
         }
+        sc.close();
         return machineList;
+        
     }
 
 
@@ -198,6 +213,7 @@ public class App {
                 }
                 reduceMap.put(word,val+1);
             }
+            sc.close();
         }
 
         for( Map.Entry<String,Integer> el : reduceMap.entrySet() ){

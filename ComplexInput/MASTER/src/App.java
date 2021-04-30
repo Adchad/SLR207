@@ -7,7 +7,7 @@ import java.util.concurrent.TimeUnit;
 
 public class App {
 
-    private static int secondsTimeout = 15;
+    private static int secondsTimeout = 1000;
     public static void main(String[] args) throws Exception {
         System.out.println("MASTER...");
 
@@ -23,7 +23,8 @@ public class App {
 
 
         while(sc.hasNextLine()){
-            ipList.add(sc.nextLine());
+            String tmp = sc.nextLine();
+            ipList.add(tmp);
         }
         splitFile("../Resources/input.txt", ipList.size());
 
@@ -106,7 +107,6 @@ public class App {
     
         byte[] data = new byte[totalSize];
         fs.read(data);
-    
         ArrayList<Integer> splitArray = new ArrayList<Integer>();
         splitArray.add(0);
 
@@ -119,9 +119,9 @@ public class App {
 
     
         int startOffset = 0;
-        for(int i = 0 ; i<processNumber ; ++i ){
+        for(int i = 0 ; i<processNumber-1 ; ++i ){
             int j=startOffset;
-            if(i!=0){
+            if(i!=0 && i!=processNumber-2){
                 while((char)data[splitSize*i+j]!=' ' && (char)data[splitSize*i+j]!='\n' ){
                     j++;
                 }
@@ -272,7 +272,6 @@ public class App {
     }
 
     private static int fetchResults(String hostname) throws IOException, InterruptedException{
-
         ProcessBuilder pb = new ProcessBuilder("ssh", "achader@"+hostname, "cat /tmp/Adam/gathered_reduce.txt" );
         Process p = pb.start();
         InputStream is = p.getInputStream();

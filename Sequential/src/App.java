@@ -3,7 +3,7 @@ import java.util.*;
 
 public class App {
     public static void main(String[] args) throws Exception {
-        FileReader     fr = new FileReader("CC-MAIN-20170322212949-00140-ip-10-233-31-227.ec2.internal.warc.wet") ;
+        FileReader     fr = new FileReader("input.txt") ;
         BufferedReader br = new BufferedReader(fr) ;
         Scanner        sc = new Scanner(br) ;
         long startTime = System.currentTimeMillis();
@@ -21,7 +21,7 @@ public class App {
             
         }
 
-        printSorted(map,false);
+        printSorted(map,true);
 
         long endTime   = System.currentTimeMillis();
         long totalTime = endTime - startTime;
